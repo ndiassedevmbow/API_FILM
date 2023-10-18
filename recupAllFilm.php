@@ -1,7 +1,10 @@
+
 <?php
 header("Content-Type: application/json");
 // FONCTION DE CONNEXION
 require_once 'connexion.php';
+
+$reponseFinal = array();
 
 $con = oursConnection();
 if(!$con)
@@ -10,34 +13,31 @@ if(!$con)
     die();
 }
 else{   
-
-    $reponse = array();
-
-
-        $query = $con->prepare("SELECT * FROM CINEMA");
+    $query = $con->prepare("SELECT * FROM CINEMA");
         
-        if($query->execute())
-        {
+    if($query->execute())
+    {
 
-            $films = array();
+        $films = array();
 
-           $result = $query->get_result();
+        $result = $query->get_result();
 
-           while($elm = $result->fetch_array(MYSQLI_ASSOC)){
-                $films[] = $elm;
-            }
-
-            $reponse['error'] = false;
-            $reponse['films'] = $films;
-            $reponse['message'] = "La commande a ete executer avec success";
-
-            $query->close();
-        }
-        else{
-            $reponse['error'] = true;
-            $reponse['message'] = "Impossible de l'executer";
+        while($elm = $result->fetch_array(MYSQLI_ASSOC)){
+            $films[] = $elm;
         }
 
-        echo(json_encode($reponse));
+        $reponseFinal['error'] = false;
+        $reponseFinal['films'] = $films;
+        $reponseFinal['message'] = "La commande a ete executer avec success";
+
+        $query->close();
+    }
+    else{
+        $reponseFinal['error'] = true;
+        $reponseFinal['message'] = "Impossible de l'executer";
+    }
+
+    echo(json_encode($reponseFinal));
+    print_r($reponseFinal);
 }
 ?>

@@ -11,47 +11,43 @@ if (!$con) {
         'message' => "Impossible de se connecter"
     );
 } else {
+
     $response = array();
 
     if (isset($_GET["id"])) {
+        
         $id = $_GET["id"];
 
-        $query = $con->prepare("SELECT id, titre, description, langue, genre, date_de_sortie, box_office, duree, nombre_etoile FROM CINEMA WHERE titre = ?");
+        $query = $con->prepare("SELECT id, titre, description, langue, genre, date_de_sortie, box_office, duree, nombre_etoile FROM CINEMA WHERE id = ?");
         $query->bind_param("s", $id);
 
         if ($query->execute()) {
+            
             $query->bind_result($id, $titre, $description, $langue, $genre, $date_de_sortie, $box_office, $duree, $nombre_etoile);
+            
             $query->fetch();
 
-            if ($id !== null) { 
-                $films = array(
-                    'id' => $id,
-                    'titre' => $titre,
-                    'description' => $description,
-                    'langue' => $langue,
-                    'genre' => $genre,
-                    'date_de_sortie' => $date_de_sortie,
-                    'box_office' => $box_office,
-                    'duree' => $duree,
-                    'nombre_etoile' => $nombre_etoile,
-                );
+            $films = array(
+                'id' => $id,
+                'titre' => $titre,
+                'description' => $description,
+                'langue' => $langue,
+                'genre' => $genre,
+                'date_de_sortie' => $date_de_sortie,
+                'box_office' => $box_office,
+                'duree' => $duree,
+                'nombre_etoile' => $nombre_etoile,
+            );
 
-                $response['error'] = false;
-                $response['films'] = $films;
-                $response['message'] = "Le film recherché est dans la base de données";
-            } else {
-                $response['error'] = true;
-                $response['message'] = "Pas de id de ce film dans la base de données";
-            }
+            $response['error'] = false;
+            $response['films'] = $films;
+            $response['message'] = "Le film recherché est dans la base de données";
 
             $query->close();
-        } else {
-            $response['error'] = true;
-            $response['message'] = "Erreur lors de l'exécution de la requête";
-        }
+        } 
     } else {
         $response['error'] = true;
-        $response['message'] = "Fournissez un id de film à rechercher";
+        $response['message'] = "Fournissez un titre de film à rechercher";
     }
 }
 
